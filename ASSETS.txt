@@ -1,0 +1,5 @@
+﻿All assets from the MonoGame port of the XNA Game State Management Sample, available at:
+
+https://github.com/tomizechsterson/game-state-management-monogame
+
+and relased under the MIT License
