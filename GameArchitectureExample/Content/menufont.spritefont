@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <XnaContent xmlns:Graphics="Microsoft.Xna.Framework.Content.Pipeline.Graphics">
 	<Asset Type="Graphics:FontDescription">
-		<FontName>Arial</FontName>
-		<Size>20</Size>
+		<FontName>orbitron</FontName>
+		<Size>45</Size>
 		<Spacing>2</Spacing>
 		<Style>Regular</Style>
 		<CharacterRegions>

@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin background.png
+#begin Asteroid.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,7 +23,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:background.png
+/build:Asteroid.png
 
 #begin blank.png
 /importer:TextureImporter
@@ -68,6 +68,36 @@
 /processorParam:TextureFormat=Compressed
 /build:menufont.spritefont
 
+#begin Nebula.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Nebula.png
+
+#begin rockbreak.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:rockbreak.wav
+
+#begin RocketDrill.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:RocketDrill.png
+
 #begin splash.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -79,4 +109,10 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:splash.png
+
+#begin Voxel Revolution.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Voxel Revolution.mp3
 

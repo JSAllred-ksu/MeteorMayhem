@@ -6,24 +6,24 @@ namespace GameArchitectureExample.Screens
     // The main menu screen is the first thing displayed when the game starts up.
     public class MainMenuScreen : MenuScreen
     {
-        public MainMenuScreen() : base("Main Menu")
+        public MainMenuScreen() : base("Meteor Mayhem")
         {
             var playGameMenuEntry = new MenuEntry("Play Game");
-            var optionsMenuEntry = new MenuEntry("Options");
+            //var optionsMenuEntry = new MenuEntry("Options");
             var exitMenuEntry = new MenuEntry("Exit");
 
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
-            optionsMenuEntry.Selected += OptionsMenuEntrySelected;
+            //optionsMenuEntry.Selected += OptionsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             MenuEntries.Add(playGameMenuEntry);
-            MenuEntries.Add(optionsMenuEntry);
+            //MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(exitMenuEntry);
         }
 
         private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen(), new CutSceneScreen());
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
         }
 
         private void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
@@ -33,7 +33,7 @@ namespace GameArchitectureExample.Screens
 
         protected override void OnCancel(PlayerIndex playerIndex)
         {
-            const string message = "Are you sure you want to exit this sample?";
+            const string message = "Are you sure you want to exit the game?";
             var confirmExitMessageBox = new MessageBoxScreen(message);
 
             confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
