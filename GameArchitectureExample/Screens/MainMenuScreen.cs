@@ -33,12 +33,13 @@ namespace GameArchitectureExample.Screens
 
         protected override void OnCancel(PlayerIndex playerIndex)
         {
-            const string message = "Are you sure you want to exit the game?";
+            /*const string message = "Are you sure you want to exit the game?";
             var confirmExitMessageBox = new MessageBoxScreen(message);
 
             confirmExitMessageBox.Accepted += ConfirmExitMessageBoxAccepted;
 
-            ScreenManager.AddScreen(confirmExitMessageBox, playerIndex);
+            ScreenManager.AddScreen(confirmExitMessageBox, playerIndex);*/
+            ScreenManager.Game.Exit();
         }
 
         private void ConfirmExitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)

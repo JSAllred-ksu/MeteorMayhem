@@ -13,6 +13,7 @@ namespace GameArchitectureExample.Screens
     {
         private ContentManager _content;
         private readonly InputAction _pauseAction;
+        private TimeSpan _activeTime;
 
         private SpriteBatch spriteBatch;
         private ShipSprite ship;
@@ -75,6 +76,11 @@ namespace GameArchitectureExample.Screens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
+            if (IsActive)
+            {
+                _activeTime += gameTime.ElapsedGameTime;
+            }
+
             if (!IsActive)
             {
                 return;
@@ -90,6 +96,11 @@ namespace GameArchitectureExample.Screens
                 {
                     asteroids[i] = null;
                 }
+            }
+
+            if (asteroids.All(a => a == null))
+            {
+                LoadingScreen.Load(ScreenManager, true, null, new VictoryScreen(_activeTime));
             }
 
             ship.Update(gameTime);
