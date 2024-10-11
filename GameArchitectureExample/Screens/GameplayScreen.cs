@@ -21,6 +21,10 @@ namespace GameArchitectureExample.Screens
         private AsteroidSprite[] asteroids;
         private Song music;
 
+        private Vector2 _shakeOffset;
+        private float _shakeIntensity;
+        private float _shakeDuration;
+
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -79,6 +83,7 @@ namespace GameArchitectureExample.Screens
             if (IsActive)
             {
                 _activeTime += gameTime.ElapsedGameTime;
+                UpdateScreenShake(gameTime);
             }
 
             if (!IsActive)
@@ -95,6 +100,7 @@ namespace GameArchitectureExample.Screens
                 else if (asteroids[i]?.Destroyed == true)
                 {
                     asteroids[i] = null;
+                    StartScreenShake(3f, 0.15f);
                 }
             }
 
@@ -109,8 +115,9 @@ namespace GameArchitectureExample.Screens
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice graphicsDevice = ScreenManager.GraphicsDevice;
-            spriteBatch.Begin();
-            spriteBatch.Draw(background, new Rectangle(0, 0, graphicsDevice.Viewport.Width, graphicsDevice.Viewport.Height), Color.White);
+            Matrix shakeTransform = Matrix.CreateTranslation(_shakeOffset.X, _shakeOffset.Y, 0);
+            spriteBatch.Begin(transformMatrix: shakeTransform);
+            spriteBatch.Draw(background, new Rectangle(0, 0, graphicsDevice.Viewport.Width + 10, graphicsDevice.Viewport.Height + 10), Color.White);
             ship.Draw(gameTime, spriteBatch);
 
             foreach (var asteroid in asteroids.Where(a => a != null))
@@ -118,6 +125,29 @@ namespace GameArchitectureExample.Screens
                 asteroid.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
+        }
+
+        private void StartScreenShake(float intensity, float duration)
+        {
+            _shakeIntensity = intensity;
+            _shakeDuration = duration;
+        }
+
+        private void UpdateScreenShake(GameTime gameTime)
+        {
+            if (_shakeDuration > 0)
+            {
+                _shakeDuration -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                float currentIntensity = _shakeIntensity * (_shakeDuration / 0.2f);
+                _shakeOffset = new Vector2(
+                    (float)new Random().NextDouble() * 2 - 1,
+                    (float)new Random().NextDouble() * 2 - 1
+                ) * currentIntensity;
+            }
+            else
+            {
+                _shakeOffset = Vector2.Zero;
+            }
         }
     }
 }

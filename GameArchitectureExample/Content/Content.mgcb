@@ -63,6 +63,18 @@
 /processorParam:TextureFormat=Color
 /build:Nebula.png
 
+#begin particle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,255,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:particle.png
+
 #begin rockbreak.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
