@@ -19,6 +19,7 @@ namespace GameArchitectureExample.Screens
         private ShipSprite ship;
         private Texture2D background;
         private AsteroidSprite[] asteroids;
+        private AsteroidParticleSystem particleSystem;
         private Song music;
 
         private Vector2 _shakeOffset;
@@ -40,35 +41,45 @@ namespace GameArchitectureExample.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            ContentManager content = ScreenManager.Game.Content;
             spriteBatch = ScreenManager.SpriteBatch;
 
-            GraphicsDevice graphicsDevice = ScreenManager.GraphicsDevice;
-            Viewport viewport = graphicsDevice.Viewport;
+            LoadGameContent();
 
+            particleSystem = new AsteroidParticleSystem(ScreenManager.Game, 1000);
+            ScreenManager.Game.Components.Add(particleSystem);
+
+            InitializeAsteroids();
+        }
+
+        private void LoadGameContent()
+        {
+            ContentManager content = ScreenManager.Game.Content;
             background = content.Load<Texture2D>("Nebula");
             music = content.Load<Song>("Voxel Revolution");
             MediaPlayer.Play(music);
             MediaPlayer.IsRepeating = true;
 
+            ship = new ShipSprite(ScreenManager.Game);
+            ship.LoadContent(content);
+        }
+
+        private void InitializeAsteroids()
+        {
             System.Random rand = new System.Random();
             asteroids = new AsteroidSprite[10];
             for (int i = 0; i < asteroids.Length; i++)
             {
                 float randomAngularSpeed = (float)(rand.NextDouble());
-                int textureWidth = 96; 
-                int textureHeight = 96; 
+                int textureWidth = 96;
+                int textureHeight = 96;
 
                 Vector2 randomPosition = new Vector2(
-                    (float)rand.NextDouble() * (viewport.Width - textureWidth),
-                    (float)rand.NextDouble() * (viewport.Height - textureHeight));
+                    (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Width - textureWidth),
+                    (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Height - textureHeight));
 
-                asteroids[i] = new AsteroidSprite(randomPosition, randomAngularSpeed);
-                asteroids[i].LoadContent(content);
+                asteroids[i] = new AsteroidSprite(randomPosition, randomAngularSpeed, particleSystem);
+                asteroids[i].LoadContent(_content);
             }
-
-            ship = new ShipSprite(ScreenManager.Game);
-            ship.LoadContent(content);
         }
 
         public override void Unload()

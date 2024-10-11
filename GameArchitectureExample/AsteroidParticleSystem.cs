@@ -20,7 +20,7 @@ namespace GameArchitectureExample.Screens
         {
             var velocity = RandomHelper.NextDirection() * RandomHelper.NextFloat(50, 200);
             var lifetime = RandomHelper.NextFloat(0.5f, 1.0f);
-            var acceleration = -velocity / lifetime; // Particles slow down
+            var acceleration = -velocity / lifetime;
             var rotation = RandomHelper.NextFloat(0, MathHelper.TwoPi);
             var angularVelocity = RandomHelper.NextFloat(-MathHelper.PiOver4, MathHelper.PiOver4);
             var scale = RandomHelper.NextFloat(0.5f, 1f);
@@ -38,7 +38,7 @@ namespace GameArchitectureExample.Screens
 
         public void PlaceParticles(Vector2 where)
         {
-            AddParticles(where);
+            AddParticles(where + new Vector2(52, 52));//center
         }
     }
 }

@@ -32,6 +32,8 @@ namespace GameArchitectureExample.Screens
 
         public bool Destroyed { get; set; } = false;
 
+        private AsteroidParticleSystem _particleSystem;
+
         /// <summary>
         /// the bounding volume of the sprite
         /// </summary>
@@ -41,11 +43,16 @@ namespace GameArchitectureExample.Screens
         /// Creates a new coin sprite
         /// </summary>
         /// <param name="position">The position of the sprite in the game</param>
-        public AsteroidSprite(Vector2 position, float angularVelocity)
+        public AsteroidSprite(Vector2 position, float angularVelocity, AsteroidParticleSystem particleSystem)
         {
             this.position = position;
             this.bounds = new BoundingCircle(position + new Vector2(52, 52), 30);
             this.angularVelocity = angularVelocity;
+            this._particleSystem = particleSystem;
+        }
+        private void EmitDestructionParticles()
+        {
+            _particleSystem.PlaceParticles(position);
         }
 
         /// <summary>
@@ -61,8 +68,8 @@ namespace GameArchitectureExample.Screens
         public void Update(GameTime gameTime, ShipSprite ship)
         {
             if (Destroyed) return;
-            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
             rotation += angularVelocity / 3;
 
             if (bounds.CollidesWith(ship.Bounds))
@@ -74,6 +81,7 @@ namespace GameArchitectureExample.Screens
                     {
                         rockBreak.Play();
                         Destroyed = true;
+                        EmitDestructionParticles();
                         return;
                     }
                     animationTimer -= ANIMATION_SPEED;
@@ -93,7 +101,7 @@ namespace GameArchitectureExample.Screens
             Rectangle source = new Rectangle(animationFrame * FRAME_WIDTH, 0, FRAME_WIDTH, texture.Height);
             Vector2 origin = new Vector2(FRAME_WIDTH / 2, texture.Height / 2);
 
-            spriteBatch.Draw(texture, position + origin, source, Color.White, rotation, origin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, position + origin, source, Color.Lerp(Color.White, Color.Red, 0.2f), rotation, origin, 1f, SpriteEffects.None, 0f);
         }
     }
 }
