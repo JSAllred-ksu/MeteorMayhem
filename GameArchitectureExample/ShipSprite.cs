@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using CollisionExample.Collisions;
+using GameArchitectureExample.StateManagement;
 
 namespace GameArchitectureExample.Screens
 {
@@ -15,7 +16,7 @@ namespace GameArchitectureExample.Screens
     public class ShipSprite
     {
         const float LINEAR_ACCELERATION = 150;
-        const float ANGULAR_ACCELERATION = 5;
+        const float ANGULAR_ACCELERATION = 4;
         const int FRAME_WIDTH = 20;
         const int FRAME_HEIGHT = 32;
         const int NUM_FRAMES = 7;
@@ -54,6 +55,29 @@ namespace GameArchitectureExample.Screens
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("RocketDrill");
+        }
+
+        public void SaveState(GameState state)
+        {
+            state.ShipPosition = position;
+            state.ShipVelocity = velocity;
+            state.ShipAngle = angle;
+            state.ShipAngularVelocity = angularVelocity;
+        }
+
+        public void LoadState(GameState state)
+        {
+            position = state.ShipPosition;
+            velocity = state.ShipVelocity;
+            angle = state.ShipAngle;
+            angularVelocity = state.ShipAngularVelocity;
+
+            // Update direction based on loaded angle
+            direction.X = (float)Math.Sin(angle);
+            direction.Y = (float)-Math.Cos(angle);
+
+            // Update bounds
+            bounds = new BoundingCircle(position + new Vector2(FRAME_WIDTH / 2, FRAME_HEIGHT / 2), FRAME_HEIGHT / 2);
         }
 
         /// <summary>

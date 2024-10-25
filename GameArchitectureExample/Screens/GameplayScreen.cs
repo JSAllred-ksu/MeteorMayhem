@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using GameArchitectureExample.StateManagement;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Media;
 
@@ -18,7 +19,7 @@ namespace GameArchitectureExample.Screens
         private SpriteBatch spriteBatch;
         private ShipSprite ship;
         private Texture2D background;
-        private AsteroidSprite[] asteroids;
+        private List<AsteroidSprite> asteroids;
         private AsteroidParticleSystem particleSystem;
         private Song music;
 
@@ -33,7 +34,7 @@ namespace GameArchitectureExample.Screens
 
             _pauseAction = new InputAction(
                 new[] { Buttons.Start, Buttons.Back },
-                new[] { Keys.Back }, true);
+                new[] { Keys.Back, Keys.Escape }, true);
         }
 
         public override void Activate()
@@ -65,9 +66,10 @@ namespace GameArchitectureExample.Screens
 
         private void InitializeAsteroids()
         {
-            System.Random rand = new System.Random();
-            asteroids = new AsteroidSprite[10];
-            for (int i = 0; i < asteroids.Length; i++)
+            Random rand = new Random();
+            asteroids = new List<AsteroidSprite>();
+
+            for (int i = 0; i < 10; i++)
             {
                 float randomAngularSpeed = (float)(rand.NextDouble());
                 int textureWidth = 96;
@@ -77,14 +79,48 @@ namespace GameArchitectureExample.Screens
                     (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Width - textureWidth),
                     (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Height - textureHeight));
 
-                asteroids[i] = new AsteroidSprite(randomPosition, randomAngularSpeed, particleSystem);
-                asteroids[i].LoadContent(_content);
+                var asteroid = new AsteroidSprite(randomPosition, randomAngularSpeed, particleSystem);
+                asteroid.LoadContent(_content);
+                asteroids.Add(asteroid);
             }
         }
 
         public override void Unload()
         {
             _content.Unload();
+        }
+
+        public void LoadState(GameState state)
+        {
+            ship.LoadState(state);
+
+            // Clear existing asteroids and load saved ones
+            asteroids.Clear();
+            foreach (var asteroidData in state.Asteroids)
+            {
+                var asteroid = new AsteroidSprite(asteroidData.Position, asteroidData.AngularVelocity, particleSystem);
+                asteroid.LoadState(asteroidData);
+                asteroids.Add(asteroid);
+            }
+        }
+
+        public GameState SaveState()
+        {
+            var state = new GameState
+            {
+                Asteroids = new AsteroidData[asteroids.Count]
+            };
+
+            ship.SaveState(state);
+
+            // Save asteroid states
+            for (int i = 0; i < asteroids.Count; i++)
+            {
+                state.Asteroids[i] = new AsteroidData();
+                asteroids[i].SaveState(state.Asteroids[i]);
+            }
+
+            return state;
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
@@ -102,20 +138,23 @@ namespace GameArchitectureExample.Screens
                 return;
             }
 
-            for (int i = 0; i < asteroids.Length; i++)
+            for (int i = 0; i < asteroids.Count; i++)
             {
-                if (asteroids[i] != null && !asteroids[i].Destroyed)
+                var asteroid = asteroids[i];
+                if (asteroid != null && !asteroid.Destroyed)
                 {
-                    asteroids[i].Update(gameTime, ship);
+                    asteroid.Update(gameTime, ship);
                 }
-                else if (asteroids[i]?.Destroyed == true)
+                else if (asteroid?.Destroyed == true)
                 {
                     asteroids[i] = null;
                     StartScreenShake(3f, 0.15f);
                 }
             }
 
-            if (asteroids.All(a => a == null))
+            asteroids.RemoveAll(a => a == null); // Remove destroyed asteroids from the list
+
+            if (!asteroids.Any())
             {
                 LoadingScreen.Load(ScreenManager, true, null, new VictoryScreen(_activeTime));
             }
@@ -123,17 +162,36 @@ namespace GameArchitectureExample.Screens
             ship.Update(gameTime);
         }
 
+        public override void HandleInput(GameTime gameTime, InputState input)
+        {
+            if (input == null)
+                throw new ArgumentNullException(nameof(input));
+
+            int playerIndex = (int)ControllingPlayer.Value;
+
+            var keyboardState = input.CurrentKeyboardStates[playerIndex];
+            var gamePadState = input.CurrentGamePadStates[playerIndex];
+
+            bool gamePadDisconnected = !gamePadState.IsConnected && input.GamePadWasConnected[playerIndex];
+
+            PlayerIndex player;
+            if (_pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
+            {
+                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+            }
+        }
+
         public override void Draw(GameTime gameTime)
         {
             GraphicsDevice graphicsDevice = ScreenManager.GraphicsDevice;
             Matrix shakeTransform = Matrix.CreateTranslation(_shakeOffset.X, _shakeOffset.Y, 0);
             spriteBatch.Begin(transformMatrix: shakeTransform);
-            spriteBatch.Draw(background, new Rectangle(0, 0, graphicsDevice.Viewport.Width + 10, graphicsDevice.Viewport.Height + 10), Color.White);
+            spriteBatch.Draw(background, new Rectangle(0, 0, graphicsDevice.Viewport.Width + 20, graphicsDevice.Viewport.Height + 20), Color.White);
             ship.Draw(gameTime, spriteBatch);
 
-            foreach (var asteroid in asteroids.Where(a => a != null))
+            foreach (var asteroid in asteroids)
             {
-                asteroid.Draw(gameTime, spriteBatch);
+                asteroid?.Draw(gameTime, spriteBatch);
             }
             spriteBatch.End();
         }

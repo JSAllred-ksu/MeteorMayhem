@@ -1,4 +1,6 @@
 ﻿using GameArchitectureExample.StateManagement;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace GameArchitectureExample.Screens
 {
@@ -6,16 +8,30 @@ namespace GameArchitectureExample.Screens
     // giving the player options to resume or quit.
     public class PauseMenuScreen : MenuScreen
     {
+        private GameState _state;
+
         public PauseMenuScreen() : base("Paused")
         {
             var resumeGameMenuEntry = new MenuEntry("Resume Game");
+            var saveGameMenuEntry = new MenuEntry("Save Game");
             var quitGameMenuEntry = new MenuEntry("Quit Game");
 
             resumeGameMenuEntry.Selected += OnCancel;
+            saveGameMenuEntry.Selected += SaveGameMenuEntrySelected;
             quitGameMenuEntry.Selected += QuitGameMenuEntrySelected;
 
             MenuEntries.Add(resumeGameMenuEntry);
+            MenuEntries.Add(saveGameMenuEntry);
             MenuEntries.Add(quitGameMenuEntry);
+        }
+
+        private void SaveGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(GameState));
+            using (StreamWriter writer = new StreamWriter("save.xml"))
+            {
+                serializer.Serialize(writer, _state);
+            }
         }
 
         private void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)

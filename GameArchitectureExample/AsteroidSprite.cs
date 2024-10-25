@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using CollisionExample.Collisions;
 using Microsoft.Xna.Framework.Audio;
+using GameArchitectureExample.StateManagement;
 
 namespace GameArchitectureExample.Screens
 {
@@ -63,6 +64,23 @@ namespace GameArchitectureExample.Screens
         {
             texture = content.Load<Texture2D>("Asteroid");
             rockBreak = content.Load<SoundEffect>("rockbreak");
+        }
+
+        public void SaveState(AsteroidData data)
+        {
+            data.Position = position;
+            data.AngularVelocity = angularVelocity;
+            data.Destroyed = Destroyed;
+            data.AnimationFrame = animationFrame;
+        }
+
+        public void LoadState(AsteroidData data)
+        {
+            position = data.Position;
+            angularVelocity = data.AngularVelocity;
+            Destroyed = data.Destroyed;
+            animationFrame = data.AnimationFrame;
+            bounds = new BoundingCircle(position + new Vector2(52, 52), 30);
         }
 
         public void Update(GameTime gameTime, ShipSprite ship)
