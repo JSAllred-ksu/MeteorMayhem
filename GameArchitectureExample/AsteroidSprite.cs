@@ -71,7 +71,7 @@ namespace GameArchitectureExample.Screens
             data.Position = position;
             data.AngularVelocity = angularVelocity;
             data.Destroyed = Destroyed;
-            data.AnimationFrame = animationFrame;
+            data.ParticleSystem = _particleSystem;
         }
 
         public void LoadState(AsteroidData data)
@@ -79,7 +79,7 @@ namespace GameArchitectureExample.Screens
             position = data.Position;
             angularVelocity = data.AngularVelocity;
             Destroyed = data.Destroyed;
-            animationFrame = data.AnimationFrame;
+            _particleSystem = data.ParticleSystem;
             bounds = new BoundingCircle(position + new Vector2(52, 52), 30);
         }
 

@@ -31,6 +31,8 @@ namespace GameArchitectureExample.Screens
             using (StreamWriter writer = new StreamWriter("save.json"))
             {
                 writer.WriteLine(JsonSerializer.Serialize(_state));
+                var messageBox = new MessageBoxScreen("Game has been saved.");
+                ScreenManager.AddScreen(messageBox, e.PlayerIndex);
             }
         }
 

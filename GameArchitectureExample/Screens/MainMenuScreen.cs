@@ -29,20 +29,20 @@ namespace GameArchitectureExample.Screens
             if (System.IO.File.Exists("save.json"))
             {
                 var gameplayScreen = new GameplayScreen();
-                try
-                {
+                //try
+                //{
                     using (StreamReader reader = new StreamReader("save.json"))
                     {
                         GameState state = JsonSerializer.Deserialize<GameState>(reader.ReadToEnd());
                         gameplayScreen.LoadState(state);
                     }
                     LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, gameplayScreen);
-                }
-                catch
-                {
-                    var messageBox = new MessageBoxScreen("Failed to load saved game.");
-                    ScreenManager.AddScreen(messageBox, e.PlayerIndex);
-                }
+                //}
+                //catch
+                //{
+                    //var messageBox = new MessageBoxScreen("Failed to load saved game.");
+                    //ScreenManager.AddScreen(messageBox, e.PlayerIndex);
+                //}
             }
             else
             {
