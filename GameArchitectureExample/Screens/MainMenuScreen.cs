@@ -3,6 +3,7 @@ using GameArchitectureExample.StateManagement;
 using System.IO;
 using System.Xml.Serialization;
 using System.Text.Json;
+using System;
 
 namespace GameArchitectureExample.Screens
 {
@@ -26,21 +27,26 @@ namespace GameArchitectureExample.Screens
 
         private void LoadGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            if (System.IO.File.Exists("save.json"))
+            if (File.Exists("save.json"))
             {
                 var gameplayScreen = new GameplayScreen();
                 //try
                 //{
-                    using (StreamReader reader = new StreamReader("save.json"))
+                    string jsonString = File.ReadAllText("save.json");
+                    if (string.IsNullOrEmpty(jsonString))
                     {
-                        GameState state = JsonSerializer.Deserialize<GameState>(reader.ReadToEnd());
-                        gameplayScreen.LoadState(state);
+                        var messageBox = new MessageBoxScreen("Save file is empty or corrupted.");
+                        ScreenManager.AddScreen(messageBox, e.PlayerIndex);
+                        return;
                     }
+
+                    GameState state = JsonSerializer.Deserialize<GameState>(jsonString);
                     LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, gameplayScreen);
+                    gameplayScreen.LoadState(state);
                 //}
-                //catch
+                //catch (Exception ex)
                 //{
-                    //var messageBox = new MessageBoxScreen("Failed to load saved game.");
+                    //var messageBox = new MessageBoxScreen($"Failed to load saved game: {ex.Message}");
                     //ScreenManager.AddScreen(messageBox, e.PlayerIndex);
                 //}
             }

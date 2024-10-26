@@ -11,18 +11,16 @@ namespace GameArchitectureExample.StateManagement
     [Serializable]
     public class GameState
     {
-        // Asteroid states
         public AsteroidData[] Asteroids { get; set; }
-
-        //public float PlayTime { get; set; }
+        public TimeSpan PlayTime { get; set; }
     }
 
     [Serializable]
     public class AsteroidData
     {
-        public Vector2 Position { get; set; }
+        public float PositionX { get; set; }
+        public float PositionY { get; set; }
         public float AngularVelocity { get; set; }
         public bool Destroyed { get; set; }
-        public  AsteroidParticleSystem ParticleSystem;
     }
 }

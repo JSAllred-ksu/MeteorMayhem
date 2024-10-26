@@ -53,7 +53,10 @@ namespace GameArchitectureExample.Screens
         }
         private void EmitDestructionParticles()
         {
-            _particleSystem.PlaceParticles(position);
+            if (_particleSystem != null)
+            {
+                _particleSystem.PlaceParticles(position);
+            }
         }
 
         /// <summary>
@@ -68,18 +71,17 @@ namespace GameArchitectureExample.Screens
 
         public void SaveState(AsteroidData data)
         {
-            data.Position = position;
+            data.PositionX = position.X;
+            data.PositionY = position.Y;
             data.AngularVelocity = angularVelocity;
             data.Destroyed = Destroyed;
-            data.ParticleSystem = _particleSystem;
         }
 
         public void LoadState(AsteroidData data)
         {
-            position = data.Position;
+            position = new Vector2(data.PositionX, data.PositionY);
             angularVelocity = data.AngularVelocity;
             Destroyed = data.Destroyed;
-            _particleSystem = data.ParticleSystem;
             bounds = new BoundingCircle(position + new Vector2(52, 52), 30);
         }
 

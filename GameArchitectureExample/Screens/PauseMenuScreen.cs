@@ -1,4 +1,5 @@
 ﻿using GameArchitectureExample.StateManagement;
+using System;
 using System.IO;
 using System.Text.Json;
 using System.Xml.Serialization;
@@ -9,10 +10,12 @@ namespace GameArchitectureExample.Screens
     // giving the player options to resume or quit.
     public class PauseMenuScreen : MenuScreen
     {
-        private GameState _state;
+        private readonly GameplayScreen _gameplayScreen;
 
-        public PauseMenuScreen() : base("Paused")
+        public PauseMenuScreen(GameplayScreen gameplayScreen) : base("Paused")
         {
+            _gameplayScreen = gameplayScreen;
+
             var resumeGameMenuEntry = new MenuEntry("Resume Game");
             var saveGameMenuEntry = new MenuEntry("Save Game");
             var quitGameMenuEntry = new MenuEntry("Quit Game");
@@ -28,10 +31,20 @@ namespace GameArchitectureExample.Screens
 
         private void SaveGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            using (StreamWriter writer = new StreamWriter("save.json"))
+            try
             {
-                writer.WriteLine(JsonSerializer.Serialize(_state));
+                var state = _gameplayScreen.SaveState();
+                using (StreamWriter writer = new StreamWriter("save.json"))
+                {
+                    string jsonString = JsonSerializer.Serialize(state);
+                    writer.WriteLine(jsonString);
+                }
                 var messageBox = new MessageBoxScreen("Game has been saved.");
+                ScreenManager.AddScreen(messageBox, e.PlayerIndex);
+            }
+            catch (Exception ex)
+            {
+                var messageBox = new MessageBoxScreen($"Failed to save game: {ex.Message}");
                 ScreenManager.AddScreen(messageBox, e.PlayerIndex);
             }
         }

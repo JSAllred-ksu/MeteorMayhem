@@ -27,6 +27,8 @@ namespace GameArchitectureExample.Screens
         private float _shakeIntensity;
         private float _shakeDuration;
 
+        private GameState _pendingState;
+
         public GameplayScreen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
@@ -44,12 +46,25 @@ namespace GameArchitectureExample.Screens
 
             spriteBatch = ScreenManager.SpriteBatch;
 
-            LoadGameContent();
-
             particleSystem = new AsteroidParticleSystem(ScreenManager.Game, 1000);
             ScreenManager.Game.Components.Add(particleSystem);
 
-            InitializeAsteroids();
+            LoadGameContent();
+
+            if (asteroids == null)
+            {
+                asteroids = new List<AsteroidSprite>();
+            }
+
+            if (_pendingState != null)
+            {
+                LoadStateInternal(_pendingState);
+                _pendingState = null;
+            }
+            else
+            {
+                InitializeAsteroids();
+            }
         }
 
         private void LoadGameContent()
@@ -92,11 +107,22 @@ namespace GameArchitectureExample.Screens
 
         public void LoadState(GameState state)
         {
-            //6ship.LoadState(state);
+            if (state == null) throw new ArgumentNullException(nameof(state));
+
+            _pendingState = state;
+        }
+
+        private void LoadStateInternal(GameState state)
+        {
+            _activeTime = state.PlayTime;
+            asteroids.Clear(); //asteroids = new List<AsteroidSprite>();
 
             foreach (var asteroidData in state.Asteroids)
             {
-                var asteroid = new AsteroidSprite(asteroidData.Position, asteroidData.AngularVelocity, particleSystem);
+                if (asteroidData == null) continue;
+
+                var asteroid = new AsteroidSprite(new Vector2(asteroidData.PositionX, asteroidData.PositionY), asteroidData.AngularVelocity, particleSystem);
+                asteroid.LoadContent(_content);
                 asteroid.LoadState(asteroidData);
                 asteroids.Add(asteroid);
             }
@@ -106,16 +132,17 @@ namespace GameArchitectureExample.Screens
         {
             var state = new GameState
             {
-                Asteroids = new AsteroidData[asteroids.Count]
+                Asteroids = new AsteroidData[asteroids.Count],
+                PlayTime = _activeTime
             };
 
-            //ship.SaveState(state);
-
-            // Save asteroid states
             for (int i = 0; i < asteroids.Count; i++)
             {
-                state.Asteroids[i] = new AsteroidData();
-                asteroids[i].SaveState(state.Asteroids[i]);
+                if (asteroids[i] != null)
+                {
+                    state.Asteroids[i] = new AsteroidData();
+                    asteroids[i].SaveState(state.Asteroids[i]);
+                }
             }
 
             return state;
@@ -150,7 +177,7 @@ namespace GameArchitectureExample.Screens
                 }
             }
 
-            asteroids.RemoveAll(a => a == null); // Remove destroyed asteroids from the list
+            asteroids.RemoveAll(a => a == null);
 
             if (!asteroids.Any())
             {
@@ -175,7 +202,7 @@ namespace GameArchitectureExample.Screens
             PlayerIndex player;
             if (_pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
-                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+                ScreenManager.AddScreen(new PauseMenuScreen(this), ControllingPlayer);
             }
         }
 
