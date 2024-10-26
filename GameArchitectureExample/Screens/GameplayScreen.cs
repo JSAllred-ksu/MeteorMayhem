@@ -92,10 +92,8 @@ namespace GameArchitectureExample.Screens
 
         public void LoadState(GameState state)
         {
-            ship.LoadState(state);
+            //6ship.LoadState(state);
 
-            // Clear existing asteroids and load saved ones
-            asteroids.Clear();
             foreach (var asteroidData in state.Asteroids)
             {
                 var asteroid = new AsteroidSprite(asteroidData.Position, asteroidData.AngularVelocity, particleSystem);
@@ -111,7 +109,7 @@ namespace GameArchitectureExample.Screens
                 Asteroids = new AsteroidData[asteroids.Count]
             };
 
-            ship.SaveState(state);
+            //ship.SaveState(state);
 
             // Save asteroid states
             for (int i = 0; i < asteroids.Count; i++)

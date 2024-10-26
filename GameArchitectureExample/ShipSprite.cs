@@ -57,28 +57,28 @@ namespace GameArchitectureExample.Screens
             texture = content.Load<Texture2D>("RocketDrill");
         }
 
-        public void SaveState(GameState state)
-        {
-            state.ShipPosition = position;
-            state.ShipVelocity = velocity;
-            state.ShipAngle = angle;
-            state.ShipAngularVelocity = angularVelocity;
-        }
+        //public void SaveState(GameState state)
+        //{
+        //    state.ShipPosition = position;
+        //    state.ShipVelocity = velocity;
+        //    state.ShipAngle = angle;
+        //    state.ShipAngularVelocity = angularVelocity;
+        //}
 
-        public void LoadState(GameState state)
-        {
-            position = state.ShipPosition;
-            velocity = state.ShipVelocity;
-            angle = state.ShipAngle;
-            angularVelocity = state.ShipAngularVelocity;
+        //public void LoadState(GameState state)
+        //{
+        //    position = state.ShipPosition;
+        //    velocity = state.ShipVelocity;
+        //    angle = state.ShipAngle;
+        //    angularVelocity = state.ShipAngularVelocity;
 
-            // Update direction based on loaded angle
-            direction.X = (float)Math.Sin(angle);
-            direction.Y = (float)-Math.Cos(angle);
+        //    // Update direction based on loaded angle
+        //    direction.X = (float)Math.Sin(angle);
+        //    direction.Y = (float)-Math.Cos(angle);
 
-            // Update bounds
-            bounds = new BoundingCircle(position + new Vector2(FRAME_WIDTH / 2, FRAME_HEIGHT / 2), FRAME_HEIGHT / 2);
-        }
+        //    // Update bounds
+        //    bounds = new BoundingCircle(position + new Vector2(FRAME_WIDTH / 2, FRAME_HEIGHT / 2), FRAME_HEIGHT / 2);
+        //}
 
         /// <summary>
         /// Updates the ship sprite

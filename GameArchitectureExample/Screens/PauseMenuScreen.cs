@@ -1,5 +1,6 @@
 ﻿using GameArchitectureExample.StateManagement;
 using System.IO;
+using System.Text.Json;
 using System.Xml.Serialization;
 
 namespace GameArchitectureExample.Screens
@@ -27,10 +28,9 @@ namespace GameArchitectureExample.Screens
 
         private void SaveGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(GameState));
-            using (StreamWriter writer = new StreamWriter("save.xml"))
+            using (StreamWriter writer = new StreamWriter("save.json"))
             {
-                serializer.Serialize(writer, _state);
+                writer.WriteLine(JsonSerializer.Serialize(_state));
             }
         }
 

@@ -2,6 +2,7 @@
 using GameArchitectureExample.StateManagement;
 using System.IO;
 using System.Xml.Serialization;
+using System.Text.Json;
 
 namespace GameArchitectureExample.Screens
 {
@@ -25,15 +26,14 @@ namespace GameArchitectureExample.Screens
 
         private void LoadGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            if (System.IO.File.Exists("save.xml"))
+            if (System.IO.File.Exists("save.json"))
             {
                 var gameplayScreen = new GameplayScreen();
                 try
                 {
-                    XmlSerializer serializer = new XmlSerializer(typeof(GameState));
-                    using (StreamReader reader = new StreamReader("save.xml"))
+                    using (StreamReader reader = new StreamReader("save.json"))
                     {
-                        GameState state = (GameState)serializer.Deserialize(reader);
+                        GameState state = JsonSerializer.Deserialize<GameState>(reader.ReadToEnd());
                         gameplayScreen.LoadState(state);
                     }
                     LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, gameplayScreen);
