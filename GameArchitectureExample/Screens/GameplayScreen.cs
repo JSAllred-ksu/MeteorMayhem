@@ -107,7 +107,7 @@ namespace GameArchitectureExample.Screens
 
         public void LoadState(GameState state)
         {
-            if (state == null) throw new ArgumentNullException(nameof(state));
+            //if (state == null) throw new ArgumentNullException(nameof(state));
 
             _pendingState = state;
         }

@@ -18,6 +18,8 @@ namespace GameArchitectureExample
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferHeight = 720;
+            _graphics.PreferredBackBufferWidth = 1280;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
@@ -54,7 +56,7 @@ namespace GameArchitectureExample
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Purple);
             base.Draw(gameTime);    // The real drawing happens inside the ScreenManager component
         }
     }

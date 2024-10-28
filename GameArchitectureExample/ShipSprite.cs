@@ -43,7 +43,7 @@ namespace GameArchitectureExample.Screens
         public ShipSprite(Game game)
         {
             this.game = game;
-            this.position = new Vector2(375, 250);
+            this.position = new Vector2(game.GraphicsDevice.Viewport.Width / 2, game.GraphicsDevice.Viewport.Height / 2); //spawn
             this.direction = -Vector2.UnitY;
             this.bounds = new BoundingCircle(position + new Vector2(FRAME_WIDTH / 2, FRAME_HEIGHT / 2), FRAME_HEIGHT / 2);
         }
