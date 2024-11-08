@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameArchitectureExample", "GameArchitectureExample\GameArchitectureExample.csproj", "{7A8B39DA-73FC-4020-A02E-0F327C1093E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicTilemapPipeline", "..\..\basic-tilemap-pipeline\BasicTilemapPipeline\BasicTilemapPipeline.csproj", "{51FF6CD9-D7C4-444D-9AD1-4ABF6387E214}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicTilemapPipeline", "BasicTilemapPipeline\BasicTilemapPipeline.csproj", "{51FF6CD9-D7C4-444D-9AD1-4ABF6387E214}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
