@@ -28,6 +28,9 @@ namespace GameArchitectureExample.Screens
         private float _shakeDuration;
 
         private GameState _pendingState;
+        private int _pendingTrialNumber = -1;
+
+        private bool _isTimeTrial = false;
 
         public GameplayScreen()
         {
@@ -51,17 +54,48 @@ namespace GameArchitectureExample.Screens
 
             LoadGameContent();
 
-            if (asteroids == null)
-            {
-                asteroids = new List<AsteroidSprite>();
-            }
+            int screenWidth = ScreenManager.GraphicsDevice.Viewport.Width;
+            int screenHeight = ScreenManager.GraphicsDevice.Viewport.Height;
 
-            if (_pendingState != null)
+            if (_isTimeTrial && _pendingTrialNumber != -1)
+            {
+                List<Vector2> positions;
+                asteroids = new List<AsteroidSprite>();
+                switch (_pendingTrialNumber)
+                {
+                    case 1:
+                        positions = CreateCircleFormation(screenWidth, screenHeight);
+                        break;
+                    case 2:
+                        positions = CreateCrossFormation(screenWidth, screenHeight);
+                        break;
+                    case 3:
+                        positions = CreateDiamondFormation(screenWidth, screenHeight);
+                        break;
+                    case 4:
+                        positions = CreateSpiralFormation(screenWidth, screenHeight);
+                        break;
+                    case 5:
+                        positions = CreateMazeFormation(screenWidth, screenHeight);
+                        break;
+                    default:
+                        positions = CreateCircleFormation(screenWidth, screenHeight);
+                        break;
+                }
+
+                foreach (Vector2 position in positions)
+                {
+                    var asteroid = new AsteroidSprite(position, 0.5f, particleSystem);
+                    asteroid.LoadContent(_content);
+                    asteroids.Add(asteroid);
+                }
+            }
+            else if (_pendingState != null)
             {
                 LoadStateInternal(_pendingState);
                 _pendingState = null;
             }
-            else
+            else if (asteroids == null)
             {
                 InitializeAsteroids();
             }
@@ -114,8 +148,18 @@ namespace GameArchitectureExample.Screens
 
         private void LoadStateInternal(GameState state)
         {
+            if (_content == null)
+            {
+                _content = new ContentManager(ScreenManager.Game.Services, "Content");
+            }
+
+            if (particleSystem == null)
+            {
+                particleSystem = new AsteroidParticleSystem(ScreenManager.Game, 1000);
+                ScreenManager.Game.Components.Add(particleSystem);
+            }
             _activeTime = state.PlayTime;
-            asteroids.Clear(); //asteroids = new List<AsteroidSprite>();
+            asteroids = new List<AsteroidSprite>();
 
             foreach (var asteroidData in state.Asteroids)
             {
@@ -242,6 +286,119 @@ namespace GameArchitectureExample.Screens
             {
                 _shakeOffset = Vector2.Zero;
             }
+        }
+
+        public void InitializeTimeTrialAsteroids(int trialNumber)
+        {
+            _isTimeTrial = true;
+            asteroids = new List<AsteroidSprite>();
+            _pendingTrialNumber = trialNumber;
+        }
+
+        private List<Vector2> CreateCircleFormation(int screenWidth, int screenHeight)
+        {
+            List<Vector2> positions = new List<Vector2>();
+            int radius = 250;
+            Vector2 center = new Vector2(screenWidth / 2 - 40, screenHeight / 2 - 40);
+
+            for (int i = 0; i < 10; i++)
+            {
+                float angle = i * MathHelper.TwoPi / 8;
+                Vector2 position = new Vector2(
+                    center.X + radius * (float)Math.Cos(angle),
+                    center.Y + radius * (float)Math.Sin(angle)
+                );
+                positions.Add(position);
+            }
+
+            return positions;
+        }
+
+        private List<Vector2> CreateCrossFormation(int screenWidth, int screenHeight)
+        {
+            List<Vector2> positions = new List<Vector2>();
+            Vector2 center = new Vector2(screenWidth / 2 - 40, screenHeight / 2 - 40);
+
+            // Horizontal line
+            for (int i = 0; i < 5; i++)
+            {
+                positions.Add(new Vector2(center.X - 300 + (i * 150), center.Y));
+            }
+
+            // Vertical line
+            for (int i = 0; i < 5; i++)
+            {
+                if (i == 2) continue; // Skip center position (already added)
+                positions.Add(new Vector2(center.X, center.Y - 300 + (i * 150)));
+            }
+
+            return positions;
+        }
+
+        private List<Vector2> CreateDiamondFormation(int screenWidth, int screenHeight)
+        {
+            List<Vector2> positions = new List<Vector2>();
+            Vector2 center = new Vector2(screenWidth / 2 - 40, screenHeight / 2 - 40);
+
+            int spacing = 160;
+            positions.Add(new Vector2(center.X, center.Y - spacing * 2)); // Top
+            positions.Add(new Vector2(center.X + spacing * 2, center.Y)); // Right
+            positions.Add(new Vector2(center.X, center.Y + spacing * 2)); // Bottom
+            positions.Add(new Vector2(center.X - spacing * 2, center.Y)); // Left
+
+            // Inner diamond
+            positions.Add(new Vector2(center.X + spacing, center.Y - spacing));
+            positions.Add(new Vector2(center.X + spacing, center.Y + spacing));
+            positions.Add(new Vector2(center.X - spacing, center.Y + spacing));
+            positions.Add(new Vector2(center.X - spacing, center.Y - spacing));
+
+            // Add two more at corners
+            positions.Add(new Vector2(center.X + spacing * 1.5f, center.Y));
+            positions.Add(new Vector2(center.X - spacing * 1.5f, center.Y));
+
+            return positions;
+        }
+
+        private List<Vector2> CreateSpiralFormation(int screenWidth, int screenHeight)
+        {
+            List<Vector2> positions = new List<Vector2>();
+            Vector2 center = new Vector2(screenWidth / 2 - 40, screenHeight / 2 - 40);
+
+            float radius = 120;
+            float angleStep = MathHelper.Pi / 4;
+            float currentAngle = 0;
+
+            for (int i = 0; i < 10; i++)
+            {
+                Vector2 position = new Vector2(
+                    center.X + radius * (float)Math.Cos(currentAngle),
+                    center.Y + radius * (float)Math.Sin(currentAngle)
+                );
+                positions.Add(position);
+                currentAngle += angleStep;
+                radius += 25;
+            }
+
+            return positions;
+        }
+
+        private List<Vector2> CreateMazeFormation(int screenWidth, int screenHeight)
+        {
+            List<Vector2> positions = new List<Vector2>();
+            Vector2 center = new Vector2(screenWidth / 2 - 40, screenHeight / 2 - 40);
+
+            positions.Add(new Vector2(center.X - 225, center.Y - 225));
+            positions.Add(new Vector2(center.X + 225, center.Y - 225));
+            positions.Add(new Vector2(center.X - 225, center.Y + 225));
+            positions.Add(new Vector2(center.X + 225, center.Y + 225));
+            positions.Add(new Vector2(center.X, center.Y - 125));
+            positions.Add(new Vector2(center.X, center.Y + 125));
+            positions.Add(new Vector2(center.X - 125, center.Y));
+            positions.Add(new Vector2(center.X + 125, center.Y));
+            positions.Add(new Vector2(center.X - 175, center.Y - 175));
+            positions.Add(new Vector2(center.X + 175, center.Y + 175));
+
+            return positions;
         }
     }
 }

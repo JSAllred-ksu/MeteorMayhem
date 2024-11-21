@@ -13,7 +13,8 @@ namespace GameArchitectureExample.Screens
     public class MainMenuScreen : MenuScreen
     {
         private ContentManager _content;
-        private Model _asteroid;
+        //private Model _asteroid;
+        //private Texture2D _rockTexture; null reference every time ://
         private float _rotationY = 0f;
         private float _rotationX = 0f;
         // First asteroid position
@@ -36,15 +37,23 @@ namespace GameArchitectureExample.Screens
         {
             var playGameMenuEntry = new MenuEntry("New Game");
             var loadGameMenuEntry = new MenuEntry("Load Game");
+            var trialGameMenuEntry = new MenuEntry("Galactic Trials");
             var exitMenuEntry = new MenuEntry("Exit");
 
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
             loadGameMenuEntry.Selected += LoadGameMenuEntrySelected;
+            trialGameMenuEntry.Selected += TimeTrialsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             MenuEntries.Add(playGameMenuEntry);
             MenuEntries.Add(loadGameMenuEntry);
+            MenuEntries.Add(trialGameMenuEntry);
             MenuEntries.Add(exitMenuEntry);
+        }
+
+        private void TimeTrialsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new TimeTrialsMenuScreen(), e.PlayerIndex);
         }
 
         private void LoadGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
@@ -95,7 +104,8 @@ namespace GameArchitectureExample.Screens
         {
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
-            _asteroid = _content.Load<Model>("rock");
+            //_asteroid = _content.Load<Model>("rock");
+            //_rockTexture = _content.Load<Texture2D>("rock-texture-surface");
         }
 
         public override void Draw(GameTime gameTime)
@@ -115,9 +125,15 @@ namespace GameArchitectureExample.Screens
                           Matrix.CreateRotationX(-_rotationX) *
                           Matrix.CreateTranslation(_asteroidPosition2);
 
-            // Draw both asteroids
-            _asteroid.Draw(world1, _view, _projection);
-            _asteroid.Draw(world2, _view, _projection);
+            //foreach (var mesh in _asteroid.Meshes)
+            //{
+            //    foreach (var part in mesh.MeshParts)
+            //    {
+            //        part.Effect.Parameters["DiffuseTexture"].SetValue(_rockTexture);
+            //    }
+            //}
+            //_asteroid.Draw(world1, _view, _projection);
+            //_asteroid.Draw(world2, _view, _projection);
         }
     }
 }

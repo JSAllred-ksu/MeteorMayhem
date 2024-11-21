@@ -88,6 +88,18 @@
 /processorParam:TextureFormat=Color
 /build:particle.png
 
+#begin Rock-Texture-Surface.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Rock-Texture-Surface.png
+
 #begin rock.fbx
 /importer:FbxImporter
 /processor:ModelProcessor

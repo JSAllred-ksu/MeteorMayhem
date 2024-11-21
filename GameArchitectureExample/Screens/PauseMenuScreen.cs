@@ -1,4 +1,5 @@
 ﻿using GameArchitectureExample.StateManagement;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.IO;
 using System.Text.Json;
@@ -18,7 +19,7 @@ namespace GameArchitectureExample.Screens
 
             var resumeGameMenuEntry = new MenuEntry("Resume Game");
             var saveGameMenuEntry = new MenuEntry("Save Game");
-            var quitGameMenuEntry = new MenuEntry("Quit Game");
+            var quitGameMenuEntry = new MenuEntry("Quit to Title");
 
             resumeGameMenuEntry.Selected += OnCancel;
             saveGameMenuEntry.Selected += SaveGameMenuEntrySelected;
@@ -62,6 +63,7 @@ namespace GameArchitectureExample.Screens
         // This uses the loading screen to transition from the game back to the main menu screen.
         private void ConfirmQuitMessageBoxAccepted(object sender, PlayerIndexEventArgs e)
         {
+            MediaPlayer.Stop();
             LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
         }
     }

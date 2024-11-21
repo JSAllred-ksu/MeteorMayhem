@@ -12,8 +12,8 @@ namespace GameArchitectureExample.Screens
     {
         private readonly TimeSpan _gameplayDuration;
         private ContentManager _content;
-        //private Texture2D _background;
-        private BasicTilemap _tilemap;
+        private Texture2D _background;
+        //private BasicTilemap _tilemap;
         private string _victoryMessage;
         private Vector2 _messagePosition;
         private float _scale = 1f;
@@ -34,8 +34,8 @@ namespace GameArchitectureExample.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            _tilemap = _content.Load<BasicTilemap>("tilemap");
-            //_background = _content.Load<Texture2D>("Nebula");
+            //_tilemap = _content.Load<BasicTilemap>("tilemap");
+            _background = _content.Load<Texture2D>("Nebula");
             
             _victoryMessage = "Congratulations! You saved the galaxy!";
 
@@ -66,8 +66,8 @@ namespace GameArchitectureExample.Screens
         public override void Draw(GameTime gameTime)
         {
             ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
-            _tilemap.Draw(gameTime, ScreenManager.SpriteBatch);
-            //ScreenManager.SpriteBatch.Draw(_background, new Rectangle(0, 0, ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height), Color.White);
+            //_tilemap.Draw(gameTime, ScreenManager.SpriteBatch);
+            ScreenManager.SpriteBatch.Draw(_background, new Rectangle(0, 0, ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height), Color.White);
             ScreenManager.SpriteBatch.DrawString(ScreenManager.Font, _victoryMessage, _messagePosition, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0f);
             ScreenManager.SpriteBatch.DrawString(ScreenManager.Font, $"Time: {_gameplayDuration.ToString(@"mm\:ss")}", _timePosition, Color.White, 0f, Vector2.Zero, _timeScale, SpriteEffects.None, 0f);
             ScreenManager.SpriteBatch.End();
