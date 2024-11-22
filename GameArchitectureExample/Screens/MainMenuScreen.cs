@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Content;
 
 namespace GameArchitectureExample.Screens
 {
-    // The main menu screen is the first thing displayed when the game starts up.
     public class MainMenuScreen : MenuScreen
     {
         private ContentManager _content;

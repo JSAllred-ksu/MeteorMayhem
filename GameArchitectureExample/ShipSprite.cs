@@ -17,8 +17,12 @@ namespace GameArchitectureExample.Screens
     {
         const float LINEAR_ACCELERATION = 150;
         const float ANGULAR_ACCELERATION = 4;
+
         const int FRAME_WIDTH = 20;
         const int FRAME_HEIGHT = 32;
+        public int FrameWidth => FRAME_WIDTH;
+        public int FrameHeight => FRAME_HEIGHT;
+
         const int NUM_FRAMES = 7;
         const double TIME_PER_FRAME = 0.1;
 
@@ -27,6 +31,7 @@ namespace GameArchitectureExample.Screens
 
         Game game;
         Texture2D texture;
+        public Texture2D Texture => texture;
         BoundingCircle bounds;
         public BoundingCircle Bounds => bounds;
 
