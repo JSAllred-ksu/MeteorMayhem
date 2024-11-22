@@ -37,6 +37,13 @@ namespace GameArchitectureExample.Screens
         float angle;
         float angularVelocity;
 
+        private Color shipColor = Color.White;
+        public Color ShipColor
+        {
+            get => shipColor;
+            set => shipColor = value;
+        }
+
         /// <summary>
         /// Creates the ship sprite
         /// </summary>
@@ -55,6 +62,15 @@ namespace GameArchitectureExample.Screens
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("RocketDrill");
+        }
+
+        public void LoadColor(Game game)
+        {
+            var gameState = game.Services.GetService<GameState>();
+            if (gameState != null)
+            {
+                shipColor = gameState.ShipColor;
+            }
         }
 
         //public void SaveState(GameState state)
@@ -146,7 +162,7 @@ namespace GameArchitectureExample.Screens
             var source = new Rectangle((texture.Width - FRAME_WIDTH) / 2, animationFrame * FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT);
             Vector2 origin = new Vector2(FRAME_WIDTH / 2f, FRAME_HEIGHT / 2f);
 
-            spriteBatch.Draw(texture, position, source, Color.White, angle, origin, 2f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(texture, position, source, shipColor, angle, origin, 2f, SpriteEffects.None, 0f);
         }
     }
 }

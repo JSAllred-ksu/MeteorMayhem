@@ -37,23 +37,28 @@ namespace GameArchitectureExample.Screens
         {
             var playGameMenuEntry = new MenuEntry("New Game");
             var loadGameMenuEntry = new MenuEntry("Load Game");
+            var customizeShipMenuEntry = new MenuEntry("Customize Ship");
             var trialGameMenuEntry = new MenuEntry("Galactic Trials");
+            var blankMenuEntry = new MenuEntry("");
             var exitMenuEntry = new MenuEntry("Exit");
 
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
             loadGameMenuEntry.Selected += LoadGameMenuEntrySelected;
+            customizeShipMenuEntry.Selected += CustomizeShipMenuEntrySelected;
             trialGameMenuEntry.Selected += TimeTrialsMenuEntrySelected;
             exitMenuEntry.Selected += OnCancel;
 
             MenuEntries.Add(playGameMenuEntry);
             MenuEntries.Add(loadGameMenuEntry);
             MenuEntries.Add(trialGameMenuEntry);
+            //MenuEntries.Add(blankMenuEntry); Want space, but dont want it selectable
+            MenuEntries.Add(customizeShipMenuEntry);
             MenuEntries.Add(exitMenuEntry);
         }
 
-        private void TimeTrialsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            ScreenManager.AddScreen(new TimeTrialsMenuScreen(), e.PlayerIndex);
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
         }
 
         private void LoadGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
@@ -80,9 +85,14 @@ namespace GameArchitectureExample.Screens
             }
         }
 
-        private void PlayGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void TimeTrialsMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, new GameplayScreen());
+            ScreenManager.AddScreen(new TimeTrialsMenuScreen(), e.PlayerIndex);
+        }
+
+        private void CustomizeShipMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new CustomizeShipScreen(), e.PlayerIndex);
         }
 
         private void OptionsMenuEntrySelected(object sender, PlayerIndexEventArgs e)

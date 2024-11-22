@@ -26,6 +26,8 @@ namespace GameArchitectureExample
             var screenFactory = new ScreenFactory();
             Services.AddService(typeof(IScreenFactory), screenFactory);
 
+            Services.AddService(typeof(GameState), new GameState());
+
             _screenManager = new ScreenManager(this);
             Components.Add(_screenManager);
 

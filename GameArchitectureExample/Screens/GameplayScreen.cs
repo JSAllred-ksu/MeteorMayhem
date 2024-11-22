@@ -111,6 +111,7 @@ namespace GameArchitectureExample.Screens
 
             ship = new ShipSprite(ScreenManager.Game);
             ship.LoadContent(content);
+            ship.LoadColor(ScreenManager.Game);
         }
 
         private void InitializeAsteroids()
@@ -177,7 +178,8 @@ namespace GameArchitectureExample.Screens
             var state = new GameState
             {
                 Asteroids = new AsteroidData[asteroids.Count],
-                PlayTime = _activeTime
+                PlayTime = _activeTime,
+                ShipColor = Color.White
             };
 
             for (int i = 0; i < asteroids.Count; i++)
