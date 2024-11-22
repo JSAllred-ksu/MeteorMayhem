@@ -3,7 +3,7 @@
 	<Asset Type="Graphics:FontDescription">
 		<FontName>orbitron</FontName>
 		<Size>45</Size>
-		<Spacing>2</Spacing>
+		<Spacing>7</Spacing>
 		<Style>Regular</Style>
 		<CharacterRegions>
 			<CharacterRegion>

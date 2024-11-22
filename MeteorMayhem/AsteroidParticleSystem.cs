@@ -11,8 +11,8 @@ namespace GameArchitectureExample.Screens
         protected override void InitializeConstants()
         {
             textureFilename = "particle";
-            minNumParticles = 20;
-            maxNumParticles = 25;
+            minNumParticles = 50;
+            maxNumParticles = 100;
             blendState = BlendState.Additive;
         }
 

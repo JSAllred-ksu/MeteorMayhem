@@ -10,7 +10,7 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\BasicTilemapPipeline\bin\Debug\net6.0\BasicTilemapPipeline.dll
+/reference:..\bin\Release\net6.0-windows\BasicTilemapPipeline.dll
 
 #---------------------------------- Content ---------------------------------#
 
