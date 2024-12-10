@@ -13,12 +13,11 @@ namespace GameArchitectureExample.StateManagement
     {
         public AsteroidData[] Asteroids { get; set; }
         public TimeSpan PlayTime { get; set; }
-        private Color shipColor = Color.White;
-        public Color ShipColor
-        {
-            get => shipColor;
-            set => shipColor = value;
-        }
+        public TimeSpan RemainingTime { get; set; }
+        public Color ShipColor { get; set; }
+        public GameplayScreen.GameMode GameMode { get; set; }
+        public int CurrentLevel { get; set; }
+        public int TotalAsteroidsDestroyed { get; set; }
     }
 
     [Serializable]

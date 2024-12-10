@@ -2,31 +2,48 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using SharpDX.Direct2D1;
 using System;
 using System.Reflection.Metadata;
 
 namespace GameArchitectureExample.Screens
 {
-    public class VictoryScreen : GameScreen
+    public class VictoryScreen : MenuScreen
     {
         private readonly TimeSpan _gameplayDuration;
         private ContentManager _content;
         private Texture2D _background;
-        //private BasicTilemap _tilemap;
         private string _victoryMessage;
-        private Vector2 _messagePosition;
-        private float _scale = 1f;
-        private float _timeScale = 1.2f;
-        private Vector2 _timePosition;
-        private float _padding = 50f;
+        private int _asteroidsDestroyed;
+        private bool _isTimeTrial;
 
-        public VictoryScreen(TimeSpan gameplayDuration)
+        public VictoryScreen(int asteroidsDestroyed) : base("Game Over")
         {
-            _gameplayDuration = gameplayDuration;
-            IsPopup = true;
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
-            TransitionOffTime = TimeSpan.FromSeconds(0.5);
+            _asteroidsDestroyed = asteroidsDestroyed;
+            _isTimeTrial = false;
+            InitializeMenuEntries();
+        }
+
+        public VictoryScreen(TimeSpan activeTime) : base("Time Trial Complete")
+        {
+            _gameplayDuration = activeTime;
+            _isTimeTrial = true;
+            InitializeMenuEntries();
+        }
+
+        private void InitializeMenuEntries()
+        {
+            var returnToTitleMenuEntry = new MenuEntry("Return to Title");
+            returnToTitleMenuEntry.Selected += ReturnToTitleMenuEntrySelected;
+
+            MenuEntries.Add(returnToTitleMenuEntry);
+        }
+
+        private void ReturnToTitleMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            MediaPlayer.Stop();
+            LoadingScreen.Load(ScreenManager, false, null, new BackgroundScreen(), new MainMenuScreen());
         }
 
         public override void Activate()
@@ -34,43 +51,44 @@ namespace GameArchitectureExample.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            //_tilemap = _content.Load<BasicTilemap>("tilemap");
             _background = _content.Load<Texture2D>("Nebula");
-            
-            _victoryMessage = "Congratulations! You saved the galaxy!";
 
-            var viewport = ScreenManager.GraphicsDevice.Viewport;
-            var viewportSize = new Vector2(viewport.Width, viewport.Height);
-
-            // center victory message
-            var messageSize = ScreenManager.Font.MeasureString(_victoryMessage) * _scale;
-            _messagePosition = new Vector2(_padding, (viewportSize.Y - messageSize.Y * _scale) / 2);
-
-            // message scale since too wide for screen
-            if (messageSize.X > viewport.Width - 2 * _padding)
-            {
-                _scale = (viewport.Width - 2 * _padding) / messageSize.X;
-                messageSize = ScreenManager.Font.MeasureString(_victoryMessage) * _scale;
-                _messagePosition.Y = (viewportSize.Y - messageSize.Y) / 2;
-            }
-
-            // center time message just below victory message
-            string timeMessage = _gameplayDuration.ToString(@"mm\:ss");
-            var timeSize = ScreenManager.Font.MeasureString(timeMessage) * _timeScale;
-            _timePosition = new Vector2(
-                (viewportSize.X - timeSize.X * 2) / 2, // center
-                _messagePosition.Y + messageSize.Y + 5f // position below 
-            );
+            IsPopup = true;
+            TransitionOnTime = TimeSpan.FromSeconds(0.5);
+            TransitionOffTime = TimeSpan.FromSeconds(0.5);
         }
 
         public override void Draw(GameTime gameTime)
         {
             ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullNone);
-            //_tilemap.Draw(gameTime, ScreenManager.SpriteBatch);
+
+            // Draw background
             ScreenManager.SpriteBatch.Draw(_background, new Rectangle(0, 0, ScreenManager.GraphicsDevice.Viewport.Width, ScreenManager.GraphicsDevice.Viewport.Height), Color.White);
-            ScreenManager.SpriteBatch.DrawString(ScreenManager.Font, _victoryMessage, _messagePosition, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0f);
-            ScreenManager.SpriteBatch.DrawString(ScreenManager.Font, $"Time: {_gameplayDuration.ToString(@"mm\:ss")}", _timePosition, Color.White, 0f, Vector2.Zero, _timeScale, SpriteEffects.None, 0f);
+
+            var viewport = ScreenManager.GraphicsDevice.Viewport;
+            var viewportSize = new Vector2(viewport.Width, viewport.Height);
+
+            // Prepare message based on game mode
+            string primaryMessage;
+            if (_isTimeTrial)
+            {
+                primaryMessage = $"Time Taken: {_gameplayDuration.Minutes:D2}:{_gameplayDuration.Seconds:D2}.{_gameplayDuration.Milliseconds:D3}";
+            }
+            else
+            {
+                primaryMessage = $"Asteroids Destroyed: {_asteroidsDestroyed}";
+            }
+
+            // Measure and draw primary message
+            Vector2 messageSize = ScreenManager.Font.MeasureString(primaryMessage);
+            Vector2 messagePosition = new Vector2((viewportSize.X - messageSize.X) / 2, 220);
+
+            ScreenManager.SpriteBatch.DrawString(ScreenManager.Font, primaryMessage, messagePosition, Color.White);
+
             ScreenManager.SpriteBatch.End();
+
+            // Draw menu entries
+            base.Draw(gameTime);
         }
     }
 }

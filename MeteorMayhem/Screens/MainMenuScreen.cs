@@ -62,24 +62,37 @@ namespace GameArchitectureExample.Screens
 
         private void LoadGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
         {
-            if (File.Exists("save.json"))
+            try
             {
-                var gameplayScreen = new GameplayScreen();
-                string jsonString = File.ReadAllText("save.json");
-                if (string.IsNullOrEmpty(jsonString))
+                if (File.Exists("save.json"))
                 {
-                    var messageBox = new MessageBoxScreen("Save file is empty or corrupted.");
-                    ScreenManager.AddScreen(messageBox, e.PlayerIndex);
-                    return;
-                }
+                    string jsonString = File.ReadAllText("save.json");
+                    if (string.IsNullOrEmpty(jsonString))
+                    {
+                        var messageBox = new MessageBoxScreen("Save file is empty or corrupted.");
+                        ScreenManager.AddScreen(messageBox, e.PlayerIndex);
+                        return;
+                    }
 
-                GameState state = JsonSerializer.Deserialize<GameState>(jsonString);
-                LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, gameplayScreen);
-                gameplayScreen.LoadState(state);
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    };
+
+                    GameState state = JsonSerializer.Deserialize<GameState>(jsonString, options);
+                    // Create the gameplay screen with the loaded state
+                    var gameplayScreen = new GameplayScreen(state.GameMode, state);
+                    LoadingScreen.Load(ScreenManager, true, e.PlayerIndex, gameplayScreen);
+                }
+                else
+                {
+                    var messageBox = new MessageBoxScreen("No saved game found.");
+                    ScreenManager.AddScreen(messageBox, e.PlayerIndex);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var messageBox = new MessageBoxScreen("No saved game found.");
+                var messageBox = new MessageBoxScreen($"Failed to load game: {ex.Message}");
                 ScreenManager.AddScreen(messageBox, e.PlayerIndex);
             }
         }

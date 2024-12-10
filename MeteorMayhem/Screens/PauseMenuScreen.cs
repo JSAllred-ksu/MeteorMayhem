@@ -35,12 +35,15 @@ namespace GameArchitectureExample.Screens
             try
             {
                 var state = _gameplayScreen.SaveState();
-                using (StreamWriter writer = new StreamWriter("save.json"))
+                var options = new JsonSerializerOptions
                 {
-                    string jsonString = JsonSerializer.Serialize(state);
-                    writer.WriteLine(jsonString);
-                }
-                var messageBox = new MessageBoxScreen("Game has been saved.");
+                    WriteIndented = true
+                };
+
+                string jsonString = JsonSerializer.Serialize(state, options);
+                File.WriteAllText("save.json", jsonString);
+
+                var messageBox = new MessageBoxScreen("Game has been saved successfully!");
                 ScreenManager.AddScreen(messageBox, e.PlayerIndex);
             }
             catch (Exception ex)
