@@ -169,7 +169,7 @@ namespace GameArchitectureExample.Screens
                     (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Width - textureWidth),
                     (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Height - textureHeight));
 
-                var asteroid = new AsteroidSprite(randomPosition, randomAngularSpeed, particleSystem);
+                var asteroid = new AsteroidSprite(randomPosition, randomAngularSpeed, particleSystem, false);
                 asteroid.LoadContent(_content);
                 asteroids.Add(asteroid);
             }
@@ -186,7 +186,7 @@ namespace GameArchitectureExample.Screens
         {
             Random rand = new Random();
             asteroids = new List<AsteroidSprite>();
-            int asteroidCount = 10 + (level * 2); // Start with 10, increase by 2 each level
+            int asteroidCount = 10 + (level * 2);
 
             for (int i = 0; i < asteroidCount; i++)
             {
@@ -198,8 +198,11 @@ namespace GameArchitectureExample.Screens
                     (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Width - textureWidth),
                     (float)rand.NextDouble() * (ScreenManager.GraphicsDevice.Viewport.Height - textureHeight));
 
-                var asteroid = new AsteroidSprite(randomPosition, randomAngularSpeed, particleSystem);
+                var asteroid = new AsteroidSprite(randomPosition, randomAngularSpeed, particleSystem, true);
                 asteroid.LoadContent(_content);
+                asteroid.SetScreenBounds(new Rectangle(0, 0,
+                    ScreenManager.GraphicsDevice.Viewport.Width,
+                    ScreenManager.GraphicsDevice.Viewport.Height));
                 asteroids.Add(asteroid);
             }
         }
@@ -237,9 +240,16 @@ namespace GameArchitectureExample.Screens
                 var asteroid = new AsteroidSprite(
                     new Vector2(asteroidData.PositionX, asteroidData.PositionY),
                     asteroidData.AngularVelocity,
-                    particleSystem
+                    particleSystem,
+                    asteroidData.IsMoving
                 );
                 asteroid.LoadContent(_content);
+
+                // Set screen bounds before loading state
+                asteroid.SetScreenBounds(new Rectangle(0, 0,
+                    ScreenManager.GraphicsDevice.Viewport.Width,
+                    ScreenManager.GraphicsDevice.Viewport.Height));
+
                 asteroid.LoadState(asteroidData);
                 asteroids.Add(asteroid);
             }

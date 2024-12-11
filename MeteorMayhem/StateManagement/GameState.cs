@@ -27,5 +27,10 @@ namespace GameArchitectureExample.StateManagement
         public float PositionY { get; set; }
         public float AngularVelocity { get; set; }
         public bool Destroyed { get; set; }
+        public float VelocityX { get; set; }
+        public float VelocityY { get; set; }
+        public bool IsMoving { get; set; }
+        public int ScreenWidth { get; set; }
+        public int ScreenHeight { get; set; }
     }
 }
