@@ -194,7 +194,7 @@ namespace GameArchitectureExample.Screens
                     float saturation = Math.Min(distance / _colorWheelRadius, 1f);
 
                     _selectedColor = HsvToRgb(hue, saturation, 1f);
-                    _previewShip.ShipColor = _selectedColor;
+                    _previewShip.Color = _selectedColor;
                 }
             }
         }
